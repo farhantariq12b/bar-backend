@@ -1,0 +1,6 @@
+{
+  "corsOptions": {
+    "origin": "http://localhost:3000, http://24.199.64.41:3000",
+    "optionsSuccessStatus": 200
+  }
+}

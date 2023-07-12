@@ -1,0 +1,662 @@
+{
+	"info": {
+		"_postman_id": "f8e146fe-1650-442d-977e-c9fc5250713e",
+		"name": "Bar",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4541070"
+	},
+	"item": [
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/products",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "pepsi",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "20",
+									"type": "text"
+								},
+								{
+									"key": "tax",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "discount_type",
+									"value": "amount",
+									"type": "text"
+								},
+								{
+									"key": "max_discount_cap",
+									"value": "10",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/products",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Zinger Burger",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "tax",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "discount_type",
+									"value": "amount",
+									"type": "text"
+								},
+								{
+									"key": "max_discount_cap",
+									"value": "10",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/products/:id",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64a69e75368b8d8e78c62025"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Beef Burger",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "tax",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "discount_type",
+									"value": "amount",
+									"type": "text"
+								},
+								{
+									"key": "max_discount_cap",
+									"value": "10",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/products/:id",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64a69e75368b8d8e78c62025"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Beef Burger",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "tax",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "discount_type",
+									"value": "amount",
+									"type": "text"
+								},
+								{
+									"key": "max_discount_cap",
+									"value": "10",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/products/:id",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64a69e75368b8d8e78c62025"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Deals",
+			"item": [
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/deals",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"deals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "item",
+									"value": "64ae5a9795daacff48869da4",
+									"type": "text"
+								},
+								{
+									"key": "addon",
+									"value": "64ae5aa895daacff48869da6",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "discount_type",
+									"value": "amount",
+									"type": "text"
+								},
+								{
+									"key": "max_discount_cap",
+									"value": "10",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/deals",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"deals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "item",
+									"value": "64a7c68483fcc8989eadc354",
+									"type": "text"
+								},
+								{
+									"key": "addon",
+									"value": "64a7c69783fcc8989eadc358",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "20",
+									"type": "text"
+								},
+								{
+									"key": "discount_type",
+									"value": "amount",
+									"type": "text"
+								},
+								{
+									"key": "max_discount_cap",
+									"value": "50",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/deals/:id",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"deals",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64a7c7227c7ec1c7ea2928b0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/deals/:id",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"deals",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64a7c7227c7ec1c7ea2928b0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Beef Burger",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "tax",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "discount_type",
+									"value": "amount",
+									"type": "text"
+								},
+								{
+									"key": "max_discount_cap",
+									"value": "10",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/deals/:id",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"deals",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64a69e75368b8d8e78c62025"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/orders?user_id=123123123",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "123123123"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"123123123\",\n    \"items\": [\n        {\n            \"id\": \"64ae5aa895daacff48869da6\",\n            \"quantity\": 2\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/orders",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "status",
+									"value": "completed",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/orders/:id",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64abe1979d454dad6bd4b429"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/orders/:id?user_id=123123123",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"orders",
+								":id"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "123123123"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64abe1979d454dad6bd4b429"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Beef Burger",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "tax",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "discount_type",
+									"value": "amount",
+									"type": "text"
+								},
+								{
+									"key": "max_discount_cap",
+									"value": "10",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrlApi}}/v1/orders/:id",
+							"host": [
+								"{{baseUrlApi}}"
+							],
+							"path": [
+								"v1",
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "64abd8e924a555f2288b4a78"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
