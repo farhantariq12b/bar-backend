@@ -3,18 +3,18 @@ const { pagination } = require('../../helpers/utils');
 /* global
 successResponse:readonly
 errorResponse:readonly
+newHttpError:readonly
 logger:readonly
 */
 
 const Deal = require('../../../models/deals');
 const { validateDeal } = require('../../validations/deal');
-const { newHttpError } = require('../../errors/error');
 
 exports.list = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
 
-        const deals = await Deal.find()
+        const deals = await Deal.find({ deleted: false })
             .sort({
                 createdAt: -1,
             })
@@ -36,6 +36,9 @@ exports.show = async (req, res) => {
     try {
         const { id } = req.params;
         const deals = await Deal.findById(id).populate(['item', 'addon']).exec();
+        if (deals.deleted) {
+            throw newHttpError(404, "Deal not found");
+        }
         res.status(200).send(successResponse(deals));
     } catch (e) {
         res.status(e?.status ?? 500).send(errorResponse(e.message, e?.status ?? 500));
@@ -55,7 +58,7 @@ exports.create = async (req, res) => {
             max_discount_cap
         } = req.body;
 
-        const dealFound = await Deal.findOne({ item, addon }).exec();
+        const dealFound = await Deal.findOne({ item, addon, deleted: false }).exec();
 
         if (dealFound) {
             throw newHttpError(400, 'Deal already exists');
@@ -112,7 +115,7 @@ exports.delete = async (req, res) => {
         if (!data) {
             throw new Error('Deal not found');
         }
-        data.remove();
+        await data.update({ deleted: true });
         res.status(200).send(successResponse(null));
     } catch (e) {
         res.status(500).send(errorResponse(e?.message ?? e));

@@ -24,13 +24,15 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
     const products = await Product.find({
         _id: {
             $in: cartItemsIds
-        }
+        },
+        deleted: false
     }).exec();
 
     const deals = await Deals.find({
         item: {
             $in: cartItemsIds
-        }
+        },
+        deleted: false
     }).exec();
 
     const items = [];
@@ -39,6 +41,9 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
     flattenItems.forEach((item) => {
         const { id, quantity } = item;
         const product = products.find(prod => prod._id.toString() === id).toObject();
+        if (!product) {
+            return;
+        }
         const productTax = product.price * (product.tax / 100);
         const discount = product.discount_type === 'percent' ? product.price * (product.discount / 100) : product.discount;
         const discountValue = discount > product.max_discount_cap ? product.max_discount_cap : discount;
@@ -79,6 +84,10 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
     items.forEach(async (item) => {
         if (item.offer_id) {
             const offerDetails = deals.find(deal => deal._id.equals(item.offer_id));
+            if (!offerDetails) {
+                itemsWithOfferDiscounts.push(item);
+                return;
+            }
             const discount = offerDetails.discount_type === 'percent' ? item.price * (offerDetails.discount / 100) : offerDetails.discount;
             const discountValue = discount > offerDetails.max_discount_cap ? offerDetails.max_discount_cap : discount;
 

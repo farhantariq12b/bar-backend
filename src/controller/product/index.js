@@ -3,6 +3,7 @@ const { pagination } = require('../../helpers/utils');
 /* global
 successResponse:readonly
 errorResponse:readonly
+newHttpError:readonly
 logger:readonly
 */
 
@@ -12,14 +13,14 @@ const { validateProduct } = require('../../validations/product');
 exports.list = async (req, res) => {
     try {
         const { page = 1, limit = 10, search, all } = req.query;
-        let query = {};
+        let query = { deleted: false };
         if (search) {
             query = {
                 ...query,
                 name: { $regex: search, $options: 'i' },
             };
         }
-        const products = all ? await product.find({}).exec() : await product.find(query)
+        const products = all ? await product.find({ deleted: false }).exec() : await product.find(query)
             .sort({
                 createdAt: -1,
             })
@@ -38,6 +39,9 @@ exports.show = async (req, res) => {
     try {
         const { id } = req.params;
         const products = await product.findById(id).exec();
+        if (!products || products.deleted) {
+            throw newHttpError(404, "Product not found");
+        }
         res.status(200).send(successResponse(products));
     } catch (e) {
         res.status(e?.status ?? 500).send(errorResponse(e.message, e?.status ?? 500));
@@ -108,7 +112,7 @@ exports.delete = async (req, res) => {
         if (!data) {
             throw new Error('Product not found');
         }
-        data.remove();
+        await data.update({ deleted: true });
         res.status(200).send(successResponse(null));
     } catch (e) {
         res.status(500).send(errorResponse(e?.message ?? e));

@@ -6,7 +6,8 @@ const productSchema = new Schema({
   tax: { type: Number, required: true, default: 0 },
   discount: { type: Number, required: false, default: 0 },
   discount_type: { type: String, required: false, default: 'amount', enum: ['amount', 'percent'] },
-  max_discount_cap: { type: Number, required: true }
+  max_discount_cap: { type: Number, required: true },
+  deleted: { type: Schema.Types.Boolean, required: false, default: false }
 }, { timestamps: true });
 
 module.exports = model('Product', productSchema, 'products');

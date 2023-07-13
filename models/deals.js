@@ -13,7 +13,8 @@ const dealsSchema = new Schema({
         enum: ['percent', 'amount'],
         default: 'amount'
     },
-    max_discount_cap: { type: Number, required: true }
+    max_discount_cap: { type: Number, required: true },
+    deleted: { type: Schema.Types.Boolean, required: false, default: false }
 }, { timestamps: true });
 
 module.exports = model('Deal', dealsSchema, 'deals');
