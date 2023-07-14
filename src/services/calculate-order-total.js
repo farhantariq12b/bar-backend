@@ -37,6 +37,7 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
 
     const items = [];
     const used = [];
+    const usedDeals = [];
 
     flattenItems.forEach((item) => {
         const { id, quantity } = item;
@@ -66,11 +67,12 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
                 const prevDiscount = prev.discount_type === "percent" ? product.price * (prev.discount / 100) : prev.discount;
                 return prevDiscount < currentDiscount ? prev : curr;
             })?.toObject();
-            if (deal) {
+            if (deal && !usedDeals.includes(deal._id.toString())) {
                 dealId = deal._id;
                 const dealItemId = deal.item.toString();
                 const index = filterCartItems.findIndex(item => item === dealItemId);
                 used.push(index);
+                usedDeals.push(dealId.toString());
             }
         }
 
