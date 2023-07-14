@@ -19,25 +19,20 @@ const Product = require('../../models/product');
 exports.calculateOrderTotal = async (cartItems, orderID) => {
     const flattenItems = cartItems.flatMap(item => Array.from({ length: item.quantity }).fill({ ...item, quantity: 1 }));
     /** @type {string[]} */
-    const cartItemsIds = flattenItems.map(item => item.id);
+    let cartItemsIds = flattenItems.map(item => ({ id: item.id, consumed: false }));
 
     const products = await Product.find({
         _id: {
-            $in: cartItemsIds
+            $in: cartItemsIds.map(item => item.id)
         },
         deleted: false
     }).exec();
 
     const deals = await Deals.find({
-        item: {
-            $in: cartItemsIds
-        },
         deleted: false
     }).exec();
 
     const items = [];
-    const used = [];
-    const usedDeals = [];
 
     flattenItems.forEach((item) => {
         const { id, quantity } = item;
@@ -54,11 +49,13 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
         const totalTaxApplied = productTax * quantity;
         const total = ((product.price - discountValue) + productTax) * quantity;
 
-        const filterCartItems = cartItemsIds.filter((_, index) => !used.includes(index));
 
-        const allDeals = deals.filter(deal =>
-            deal.addon.equals(id) &&
-            filterCartItems.includes(deal.item.toJSON().valueOf()));
+        const allDeals = deals.filter(deal => deal.addon.equals(id) &&
+            cartItemsIds
+                .filter(cartItem => cartItem.id !== id && cartItem.consumed === false)
+                .map(item => item.id)
+                .includes(deal.item.toJSON().valueOf())
+        );
 
         let dealId = null;
         if (allDeals.length) {
@@ -67,12 +64,18 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
                 const prevDiscount = prev.discount_type === "percent" ? product.price * (prev.discount / 100) : prev.discount;
                 return prevDiscount < currentDiscount ? prev : curr;
             })?.toObject();
-            if (deal && !usedDeals.includes(deal._id.toString())) {
+
+            if (deal) {
                 dealId = deal._id;
-                const dealItemId = deal.item.toString();
-                const index = filterCartItems.findIndex(item => item === dealItemId);
-                used.push(index);
-                usedDeals.push(dealId.toString());
+                const index = cartItemsIds.findIndex(item => item.id === deal.item.toJSON().valueOf() && item.consumed === false);
+                if (index >= 0) {
+                    cartItemsIds = cartItemsIds.map((item, idx) => {
+                        if (idx === index) {
+                            return { ...item, consumed: true };
+                        }
+                        return { ...item };
+                    });
+                }
             }
         }
 
@@ -85,7 +88,7 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
                 actual_price: actualPrice,
                 discount: totalDiscount,
                 tax: totalTaxApplied,
-                price: total
+                price: total,
             }
         );
     });
@@ -93,7 +96,6 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
     const itemsWithOfferDiscounts = [];
 
     items.forEach(async (item) => {
-
         if (item.offer_id) {
             const offerDetails = deals.find(deal => deal._id.equals(item.offer_id));
 
@@ -116,6 +118,7 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
     });
 
     const orderTotal = itemsWithOfferDiscounts.reduce((a, b) => a + b.price, 0);
+    console.log(cartItemsIds);
 
     return { cartItems: itemsWithOfferDiscounts, orderTotal };
 };
