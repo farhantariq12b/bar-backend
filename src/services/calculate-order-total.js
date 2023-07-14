@@ -61,7 +61,7 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
 
         let dealId = null;
         if (allDeals.length) {
-            const deal = deals.reduce((prev, curr) => {
+            const deal = allDeals.reduce((prev, curr) => {
                 const currentDiscount = curr.discount_type === "percent" ? product.price * (curr.discount / 100) : curr.discount;
                 const prevDiscount = prev.discount_type === "percent" ? product.price * (prev.discount / 100) : prev.discount;
                 return prevDiscount < currentDiscount ? prev : curr;
@@ -100,10 +100,14 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
                 return;
             }
             const discount = offerDetails.discount_type === 'percent' ? item.price * (offerDetails.discount / 100) : offerDetails.discount;
-            const discountValue = offerDetails.max_discount_cap && discount > offerDetails.max_discount_cap ? offerDetails.max_discount_cap : discount;
+            let discountValue = offerDetails.max_discount_cap && discount > offerDetails.max_discount_cap ? offerDetails.max_discount_cap : discount;
 
-            const total = item.price - discountValue;
-            itemsWithOfferDiscounts.push({ ...item, price: total < 0 ? 0 : total, discount: item.discount + discountValue });
+            if (item.discount < discountValue) {
+                discountValue = item.discount;
+            }
+
+            const total = (item.price + item.discount) - discountValue;
+            itemsWithOfferDiscounts.push({ ...item, price: total < 0 ? 0 : total, discount: discountValue });
             return;
         }
         itemsWithOfferDiscounts.push(item);
