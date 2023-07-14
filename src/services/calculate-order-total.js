@@ -61,7 +61,11 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
 
         let dealId = null;
         if (allDeals.length) {
-            const deal = deals.reduce((prev, curr) => prev.discount < curr.discount ? prev : curr)?.toObject();
+            const deal = deals.reduce((prev, curr) => {
+                const currentDiscount = curr.discount_type === "percent" ? product.price * (curr.discount / 100) : curr.discount;
+                const prevDiscount = prev.discount_type === "percent" ? product.price * (prev.discount / 100) : prev.discount;
+                return prevDiscount < currentDiscount ? prev : curr;
+            })?.toObject();
             if (deal) {
                 dealId = deal._id;
                 const dealItemId = deal.item.toString();
@@ -99,7 +103,7 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
             const discountValue = offerDetails.max_discount_cap && discount > offerDetails.max_discount_cap ? offerDetails.max_discount_cap : discount;
 
             const total = item.price - discountValue;
-            itemsWithOfferDiscounts.push({ ...item, price: total < 0 ? 0 : total });
+            itemsWithOfferDiscounts.push({ ...item, price: total < 0 ? 0 : total, discount: item.discount + discountValue });
             return;
         }
         itemsWithOfferDiscounts.push(item);
