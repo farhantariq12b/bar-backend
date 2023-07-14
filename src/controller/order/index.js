@@ -13,6 +13,7 @@ const { calculateOrderTotal } = require('../../services/calculate-order-total');
 successResponse:readonly
 errorResponse:readonly
 newHttpError:readonly
+pusher:readonly
 logger:readonly
 */
 
@@ -128,11 +129,25 @@ exports.update = async (req, res) => {
             status
         } = req.body;
 
-        const order = await Order.findByIdAndUpdate(id, {
+        const order = await Order.findById(id).exec();
+
+        if (order.status === status) {
+            throw newHttpError(422, "Order status is the same as the older");
+        }
+
+        await order.update({
             status
         }, { new: true }).exec();
 
-        res.status(200).send(successResponse(order));
+        try {
+            pusher.trigger("order_update", `order_status_update_${order.user_id}`, {
+                message: { order_id: order._id, status: order.status }
+            });
+        } catch (e) {
+            logger.error(e);
+        }
+
+        res.status(200).send(successResponse({ ...order.toObject(), status }));
     } catch (e) {
         res.status(e?.status ?? 500).send(errorResponse(e.message, e?.status ?? 500));
         logger.error(e);

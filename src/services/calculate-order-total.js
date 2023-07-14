@@ -46,7 +46,7 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
         }
         const productTax = product.price * (product.tax / 100);
         const discount = product.discount_type === 'percent' ? product.price * (product.discount / 100) : product.discount;
-        const discountValue = discount > product.max_discount_cap ? product.max_discount_cap : discount;
+        const discountValue = product.max_discount_cap && discount > product.max_discount_cap ? product.max_discount_cap : discount;
 
         const actualPrice = product.price * quantity;
         const totalDiscount = discountValue * quantity;
@@ -55,21 +55,26 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
 
         const filterCartItems = cartItemsIds.filter((_, index) => !used.includes(index));
 
-        const deal = deals.find(deal =>
+        const allDeals = deals.filter(deal =>
             deal.addon.equals(id) &&
-            filterCartItems.includes(deal.item.toJSON().valueOf()))?.toObject();
+            filterCartItems.includes(deal.item.toJSON().valueOf()));
 
-        if (deal) {
-            const dealItemId = deal.item.toString();
-            const index = filterCartItems.findIndex(item => item === dealItemId);
-            used.push(index);
+        let dealId = null;
+        if (allDeals.length) {
+            const deal = deals.reduce((prev, curr) => prev.discount < curr.discount ? prev : curr)?.toObject();
+            if (deal) {
+                dealId = deal._id;
+                const dealItemId = deal.item.toString();
+                const index = filterCartItems.findIndex(item => item === dealItemId);
+                used.push(index);
+            }
         }
 
         items.push(
             {
                 order_id: orderID,
                 item_id: id,
-                offer_id: deal?._id ?? null,
+                offer_id: dealId,
                 quantity,
                 actual_price: actualPrice,
                 discount: totalDiscount,
@@ -82,17 +87,19 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
     const itemsWithOfferDiscounts = [];
 
     items.forEach(async (item) => {
+
         if (item.offer_id) {
             const offerDetails = deals.find(deal => deal._id.equals(item.offer_id));
+
             if (!offerDetails) {
                 itemsWithOfferDiscounts.push(item);
                 return;
             }
             const discount = offerDetails.discount_type === 'percent' ? item.price * (offerDetails.discount / 100) : offerDetails.discount;
-            const discountValue = discount > offerDetails.max_discount_cap ? offerDetails.max_discount_cap : discount;
+            const discountValue = offerDetails.max_discount_cap && discount > offerDetails.max_discount_cap ? offerDetails.max_discount_cap : discount;
 
             const total = item.price - discountValue;
-            itemsWithOfferDiscounts.push({ ...item, price: total });
+            itemsWithOfferDiscounts.push({ ...item, price: total < 0 ? 0 : total });
             return;
         }
         itemsWithOfferDiscounts.push(item);

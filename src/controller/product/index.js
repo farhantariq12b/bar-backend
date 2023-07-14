@@ -61,7 +61,17 @@ exports.create = async (req, res) => {
             discount_type,
             max_discount_cap
         } = req.body;
-        const newProduct = await product.create({
+
+        const prod = await product.findOne({ name }).exec();
+        const productAdded = prod ? await prod.update({
+            name,
+            price,
+            tax,
+            discount,
+            discount_type,
+            max_discount_cap,
+            deleted: false
+        }) : await product.create({
             name,
             price,
             tax,
@@ -69,7 +79,7 @@ exports.create = async (req, res) => {
             discount_type,
             max_discount_cap
         });
-        res.status(200).send(successResponse(newProduct));
+        res.status(200).send(successResponse(productAdded));
     } catch (e) {
         res.status(e?.status ?? 500).send(errorResponse(e.message, e?.status ?? 500));
         logger.error(e);
@@ -78,7 +88,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const { id } = req.params
+        const { id } = req.params;
         await validateProduct.validateAsync(req.body);
 
         const {

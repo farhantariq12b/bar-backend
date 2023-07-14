@@ -29,7 +29,7 @@ describe("POST /api/v1/products", () => {
             discount: 2,
             discount_type: 'amount',
             max_discount_cap: 10,
-        }
+        };
         const res = await request(app).post('/api/v1/products').send(payload);
         expect(res.statusCode).toBe(200);
         expect(res.body.data.name).toBe(payload.name);

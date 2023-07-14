@@ -9,6 +9,7 @@ logger:readonly
 
 const Deal = require('../../../models/deals');
 const { validateDeal } = require('../../validations/deal');
+const Product = require('../../../models/product');
 
 exports.list = async (req, res) => {
     try {
@@ -62,6 +63,12 @@ exports.create = async (req, res) => {
 
         if (dealFound) {
             throw newHttpError(400, 'Deal already exists');
+        }
+
+        const product = await Product.findById(addon).exec();
+
+        if (discount_type === "amount" && discount > product.price) {
+            throw newHttpError(400, "Discount cannot be more that product's actual price");
         }
 
         const deal = await Deal.create({

@@ -9,6 +9,7 @@ const routes = require('./routes');
 const { successResponse, errorResponse } = require('./helpers/http_response');
 const { newHttpError } = require('./errors/error');
 const { corsOptions } = require('../config/app/cors');
+const { pusherInstance } = require('./helpers/pusher');
 
 
 const setupApp = (app) => {
@@ -48,6 +49,7 @@ const setupApp = (app) => {
   global.errorResponse = errorResponse;
   global.newHttpError = newHttpError;
   global.logger = logger;
+  global.pusher = pusherInstance;
 };
 
 module.exports = setupApp;
