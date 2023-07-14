@@ -102,7 +102,7 @@ exports.calculateOrderTotal = async (cartItems, orderID) => {
             const discount = offerDetails.discount_type === 'percent' ? item.price * (offerDetails.discount / 100) : offerDetails.discount;
             let discountValue = offerDetails.max_discount_cap && discount > offerDetails.max_discount_cap ? offerDetails.max_discount_cap : discount;
 
-            if (item.discount < discountValue) {
+            if (item.discount && (item.discount < discountValue)) {
                 discountValue = item.discount;
             }
 
